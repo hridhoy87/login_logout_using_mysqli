@@ -49,9 +49,6 @@ if(!empty($password) && !empty($email)):
     }
 
 endif;
-?>
-
-
         //1547
 
 echo '
