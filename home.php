@@ -5,28 +5,36 @@
  * Date: 17-Apr-17
  * Time: 2:24 AM
  */
-    session_start();
-    if( !isset($_POST['giveEmail']) || !isset($_POST['givePass'])){
-        header("index.php");
+session_start();
+
+if( !isset($_POST['giveEmail']) || !isset($_POST['givePass'])){
+    header("index.php");
+}
+
+if( isset($_SESSION['giveEmail']) ){
+    header("Location: /");
+}
+
+require "database.php";
+
+$message="";
+
+$password=md5($_POST['givePass']);
+$email=$_POST['giveEmail'];
+
+if(!empty($password) && !empty($email)):
+    $query="SELECT 'id' 'email' 'password' FROM info WHERE 'email'='".$email."' AND 'password'='".$password."'";
+    var_dump($query);
+    $result=mysqli_query($con,$query);
+    var_dump($result);
+    if (!empty($result) && $password==$result['password']) {
+        header("Location: home.php");
+        $_SESSION['giveEmail'] = $result['id'];
+        $message = "LOGGED IN SUCCESSFULLY";
+    }else {
+            echo 'Sorry Credentials did not match';
     }
-    require "database.php";
-
-    $message="";
-
-    $password=md5($_POST['givePass']);
-    $email=$_POST['giveEmail'];
-
-    if(!empty($password) && !empty($email)):
-        $query="SELECT 'password' FROM info WHERE 'email'='".$email."' AND 'password'='".$password;
-        $result=mysqli_query($con,$query);
-        var_dump($result);
-        if (!empty($result)) {
-            header("Location: home.php");
-            $message = "LOGGED IN SUCCESSFULLY";
-        }else {
-                echo 'Sorry Credentials did not match';
-        }
-    endif;
+endif;
 
 
         //1547
