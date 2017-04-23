@@ -11,30 +11,45 @@ if( !isset($_POST['giveEmail']) || !isset($_POST['givePass'])){
     header("index.php");
 }
 
-if( isset($_SESSION['giveEmail']) ){
-    header("Location: /");
-}
+//if( isset($_SESSION['giveEmail']) ){
+//    header("Location: http://www.google.com");
+//}
 
 require "database.php";
 
 $message="";
 
+//$password=($_POST['givePass']);
 $password=md5($_POST['givePass']);
 $email=$_POST['giveEmail'];
 
 if(!empty($password) && !empty($email)):
-    $query="SELECT 'id' 'email' 'password' FROM info WHERE 'email'='".$email."' AND 'password'='".$password."'";
+
+    $query="SELECT * FROM info WHERE email='".$email."'";//." AND 'password'='".$password."'";
+
     var_dump($query);
-    $result=mysqli_query($con,$query);
+
+    $followingdata=mysqli_query($con,$query);
+
+    $result = $followingdata->fetch_array(MYSQLI_ASSOC);
+
     var_dump($result);
-    if (!empty($result) && $password==$result['password']) {
-        header("Location: home.php");
+
+    if ( count($result)<0 || $password != $result['password']) {
+
+        echo 'Sorry Credentials did not match';
+//        header("Location: http://www.google.com");
+
+    }else {
+
         $_SESSION['giveEmail'] = $result['id'];
         $message = "LOGGED IN SUCCESSFULLY";
-    }else {
-            echo 'Sorry Credentials did not match';
+        header("Location: logged_in.php");
+
     }
+
 endif;
+?>
 
 
         //1547
